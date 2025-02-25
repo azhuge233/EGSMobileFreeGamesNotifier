@@ -1,0 +1,77 @@
+﻿using System.Text;
+using System.Text.Json;
+using EGSMobileFreeGamesNotifier.Models.Config;
+using EGSMobileFreeGamesNotifier.Models.PostContent;
+using EGSMobileFreeGamesNotifier.Models.Record;
+using EGSMobileFreeGamesNotifier.Strings;
+using Microsoft.Extensions.Logging;
+
+namespace EGSMobileFreeGamesNotifier.Services.Notifier
+{
+    internal class PushPlus(ILogger<PushPlus> logger) : INotifiable
+    {
+        private readonly ILogger<PushPlus> _logger = logger;
+
+        public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records)
+        {
+            try
+            {
+                _logger.LogDebug(NotifierStrings.debugSendMessagePushPlus);
+
+                var client = new HttpClient();
+
+                var title = string.Format(NotifyFormatStrings.pushPlusTitleFormat, records.Count);
+
+                var postContent = new PushPlusPostContent()
+                {
+                    Token = config.PushPlusToken,
+                    Title = title,
+                    Content = CreateMessage(records)
+                };
+
+                var data = new StringContent(JsonSerializer.Serialize(postContent), Encoding.UTF8, "application/json");
+                var resp = await client.PostAsync(NotifyFormatStrings.pushPlusPostUrl, data);
+
+                _logger.LogDebug(await resp.Content.ReadAsStringAsync());
+
+                _logger.LogDebug($"Done: {NotifierStrings.debugSendMessagePushPlus}");
+            }
+            catch (Exception)
+            {
+                _logger.LogError($"Error: {NotifierStrings.debugSendMessagePushPlus}");
+                throw;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        private string CreateMessage(List<NotifyRecord> records)
+        {
+            try
+            {
+                _logger.LogDebug(NotifierStrings.debugCreateMessage);
+
+                var sb = new StringBuilder();
+
+                records.ForEach(record => sb.AppendFormat(NotifyFormatStrings.pushPlusBodyFormat, record.ToPushPlusMessage()));
+
+                sb.Append(NotifyFormatStrings.projectLinkHTML);
+
+                _logger.LogDebug($"Done: {NotifierStrings.debugCreateMessage}");
+                return sb.ToString();
+            }
+            catch (Exception)
+            {
+                _logger.LogError($"Error: {NotifierStrings.debugCreateMessage}");
+                throw;
+            }
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+    }
+}
