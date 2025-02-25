@@ -37,7 +37,7 @@ namespace EGSMobileFreeGamesNotifier
                     await notifyOP.DoNotify(config, parseResult.NotifyRecords);
 
                     // Write new records
-                    // jsonOp.WriteData(parseResult.Records);
+                    jsonOp.WriteData(parseResult.Records);
                 }
 
                 logger.Info(" - Job End -\n");
