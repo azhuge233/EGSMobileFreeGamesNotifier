@@ -1,13 +1,11 @@
-﻿namespace EGSMobileFreeGamesNotifier.Strings
-{
-    internal class NotifyFormatStrings
-    {
+﻿namespace EGSMobileFreeGamesNotifier.Strings {
+    internal class NotifyFormatStrings {
         #region ToMessage() strings
         internal static readonly string telegramPushFormat = "<b>EGS Mobile Free Games</b>\n\n" +
             "<i>{0}</i>\n\n" +
             "{1}\n\n" +
             "{2}\n\n" +
-			"#EGSMobileFreeGamesNotifier";
+            "#EGSMobileFreeGamesNotifier";
 
         internal static readonly string barkPushFormat = "{0}\n\n" +
             "{1}\n\n" +
@@ -54,10 +52,9 @@
         internal static readonly string emailTitleFormat = "{0} new free game(s) - EGSMobileFreeGamesNotifier";
         internal static readonly string emailBodyFormat = "<br>{0}";
 
-        internal static readonly string qqUrlFormat = "http://{0}:{1}/send_private_msg?user_id={2}&message=";
-        internal static readonly string qqRedUrlFormat = "ws://{0}:{1}";
-        internal static readonly string qqRedWSConnectPacketType = "meta::connect";
-        internal static readonly string qqRedWSSendPacketType = "message::send";
+        internal static readonly string qqHttpUrlFormat = "http://{0}:{1}/send_private_msg?access_token={2}";
+        internal static readonly string qqWebSocketUrlFormat = "ws://{0}:{1}/?access_token={2}";
+        internal static readonly string qqWebSocketSendAction = "send_private_msg";
 
         internal static readonly string pushPlusTitleFormat = "{0} new free game(s) - EGSMobileFreeGamesNotifier";
         internal static readonly string pushPlusBodyFormat = "<br>{0}";

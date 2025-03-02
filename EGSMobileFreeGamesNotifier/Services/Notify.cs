@@ -6,124 +6,94 @@ using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace EGSMobileFreeGamesNotifier.Services
-{
-    internal class Notify(ILogger<Notify> logger) : IDisposable
-    {
+namespace EGSMobileFreeGamesNotifier.Services {
+    internal class Notify(ILogger<Notify> logger) : IDisposable {
         private readonly ILogger<Notify> _logger = logger;
         private readonly IServiceProvider services = DI.BuildDiNotifierOnly();
 
-        public async Task DoNotify(NotifyConfig config, List<NotifyRecord> pushList)
-        {
-            if (pushList.Count == 0)
-            {
+        public async Task DoNotify(NotifyConfig config, List<NotifyRecord> pushList) {
+            if (pushList.Count == 0) {
                 _logger.LogInformation(NotifyStrings.debugNoNewNotifications);
                 return;
             }
 
-            try
-            {
+            try {
                 _logger.LogDebug(NotifyStrings.debugNotify);
 
                 var notifyTasks = new List<Task>();
 
                 // Telegram notifications
-                if (config.EnableTelegram)
-                {
+                if (config.EnableTelegram) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "Telegram");
                     notifyTasks.Add(services.GetRequiredService<TelegramBot>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Telegram");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Telegram");
 
                 // Bark notifications
-                if (config.EnableBark)
-                {
+                if (config.EnableBark) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "Bark");
                     notifyTasks.Add(services.GetRequiredService<Bark>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Bark");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Bark");
 
-                // QQ notifications
-                if (config.EnableQQ)
-                {
-                    _logger.LogInformation(NotifyStrings.debugEnabledFormat, "QQ");
-                    notifyTasks.Add(services.GetRequiredService<QQ>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "QQ");
+				// QQ Http notifications
+				if (config.EnableQQHttp) {
+                    _logger.LogInformation(NotifyStrings.debugEnabledFormat, "QQ Http");
+                    notifyTasks.Add(services.GetRequiredService<QQHttp>().SendMessage(config, pushList));
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "QQ Http");
 
-                // QQ Red (Chronocat) notifications
-                if (config.EnableRed)
-                {
-                    _logger.LogInformation(NotifyStrings.debugEnabledFormat, "QQ Red (Chronocat)");
-                    notifyTasks.Add(services.GetRequiredService<QQRed>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "QQ Red (Chronocat)");
+				// QQ WebSocket notifications
+				if (config.EnableQQWebSocket) {
+                    _logger.LogInformation(NotifyStrings.debugEnabledFormat, "QQ WebSocket");
+                    notifyTasks.Add(services.GetRequiredService<QQWebSocket>().SendMessage(config, pushList));
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "QQ WebSocket");
 
                 // PushPlus notifications
-                if (config.EnablePushPlus)
-                {
+                if (config.EnablePushPlus) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "PushPlus");
                     notifyTasks.Add(services.GetRequiredService<PushPlus>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "PushPlus");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "PushPlus");
 
                 // DingTalk notifications
-                if (config.EnableDingTalk)
-                {
+                if (config.EnableDingTalk) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "DingTalk");
                     notifyTasks.Add(services.GetRequiredService<DingTalk>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "DingTalk");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "DingTalk");
 
                 // PushDeer notifications
-                if (config.EnablePushDeer)
-                {
+                if (config.EnablePushDeer) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "PushDeer");
                     notifyTasks.Add(services.GetRequiredService<PushDeer>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "PushDeer");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "PushDeer");
 
                 // Discord notifications
-                if (config.EnableDiscord)
-                {
+                if (config.EnableDiscord) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "Discord");
                     notifyTasks.Add(services.GetRequiredService<Discord>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Discord");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Discord");
 
                 // Email notifications
-                if (config.EnableEmail)
-                {
+                if (config.EnableEmail) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "Email");
                     notifyTasks.Add(services.GetRequiredService<Email>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Email");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Email");
 
                 // Meow notifications
-                if (config.EnableMeow)
-                {
+                if (config.EnableMeow) {
                     _logger.LogInformation(NotifyStrings.debugEnabledFormat, "Meow");
                     notifyTasks.Add(services.GetRequiredService<Meow>().SendMessage(config, pushList));
-                }
-                else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Meow");
+                } else _logger.LogInformation(NotifyStrings.debugDisabledFormat, "Meow");
 
                 await Task.WhenAll(notifyTasks);
 
                 _logger.LogDebug($"Done: {NotifyStrings.debugNotify}");
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {NotifyStrings.debugNotify}");
                 throw;
-            }
-            finally
-            {
+            } finally {
                 Dispose();
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             GC.SuppressFinalize(this);
         }
     }

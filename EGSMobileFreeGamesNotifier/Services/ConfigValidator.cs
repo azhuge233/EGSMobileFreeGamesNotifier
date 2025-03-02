@@ -2,21 +2,16 @@
 using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.Logging;
 
-namespace EGSMobileFreeGamesNotifier.Services
-{
-    internal class ConfigValidator(ILogger<ConfigValidator> logger) : IDisposable
-    {
+namespace EGSMobileFreeGamesNotifier.Services {
+    internal class ConfigValidator(ILogger<ConfigValidator> logger) : IDisposable {
         private readonly ILogger<ConfigValidator> _logger = logger;
 
-        internal void CheckValid(Config config)
-        {
-            try
-            {
+        internal void CheckValid(Config config) {
+            try {
                 _logger.LogDebug(ConfigValidatorStrings.debugCheckValid);
 
                 // Telegram
-                if (config.EnableTelegram)
-                {
+                if (config.EnableTelegram) {
                     if (string.IsNullOrEmpty(config.TelegramToken))
                         throw new Exception(message: ConfigValidatorStrings.noTelegramToken);
                     if (string.IsNullOrEmpty(config.TelegramChatID))
@@ -24,8 +19,7 @@ namespace EGSMobileFreeGamesNotifier.Services
                 }
 
                 // Bark
-                if (config.EnableBark)
-                {
+                if (config.EnableBark) {
                     if (string.IsNullOrEmpty(config.BarkAddress))
                         throw new Exception(message: ConfigValidatorStrings.noBarkAddress);
                     if (string.IsNullOrEmpty(config.BarkToken))
@@ -33,8 +27,7 @@ namespace EGSMobileFreeGamesNotifier.Services
                 }
 
                 // Email
-                if (config.EnableEmail)
-                {
+                if (config.EnableEmail) {
                     if (string.IsNullOrEmpty(config.FromEmailAddress))
                         throw new Exception(message: ConfigValidatorStrings.noFromEmailAddress);
                     if (string.IsNullOrEmpty(config.ToEmailAddress))
@@ -47,61 +40,58 @@ namespace EGSMobileFreeGamesNotifier.Services
                         throw new Exception(message: ConfigValidatorStrings.noAuthPassword);
                 }
 
-                // QQ
-                if (config.EnableQQ)
-                {
-                    if (string.IsNullOrEmpty(config.QQAddress))
-                        throw new Exception(message: ConfigValidatorStrings.noQQAddress);
-                    if (string.IsNullOrEmpty(config.QQPort.ToString()))
-                        throw new Exception(message: ConfigValidatorStrings.noQQPort);
-                    if (string.IsNullOrEmpty(config.ToQQID))
-                        throw new Exception(message: ConfigValidatorStrings.noToQQID);
-                }
+				// QQ Http
+				if (config.EnableQQHttp) {
+					if (string.IsNullOrEmpty(config.QQHttpAddress))
+						throw new Exception(message: "No QQ http address provided!");
+					if (string.IsNullOrEmpty(config.QQHttpPort.ToString()))
+						throw new Exception(message: "No QQ http port provided!");
+					if (string.IsNullOrEmpty(config.ToQQID))
+						throw new Exception(message: "No QQ ID provided!");
+					if (string.IsNullOrEmpty(config.QQHttpToken))
+						_logger.LogInformation("No QQ Http token provided, make sure to set it right if token is enabled in your server settings.");
+				}
 
-                // QQ Red (Chronocat)
-                if (config.EnableRed)
-                {
-                    if (string.IsNullOrEmpty(config.RedAddress))
-                        throw new Exception(message: ConfigValidatorStrings.noRedAddress);
-                    if (string.IsNullOrEmpty(config.RedPort.ToString()))
-                        throw new Exception(message: ConfigValidatorStrings.noRedPort);
-                    if (string.IsNullOrEmpty(config.RedToken))
-                        throw new Exception(message: ConfigValidatorStrings.noRedToken);
-                    if (string.IsNullOrEmpty(config.ToQQID))
-                        throw new Exception(message: ConfigValidatorStrings.noToQQID);
-                }
+				// QQ WebSocket
+				if (config.EnableQQWebSocket) {
+					if (string.IsNullOrEmpty(config.QQWebSocketAddress))
+						throw new Exception(message: "No QQ WebSocket address provided!");
+					if (string.IsNullOrEmpty(config.QQWebSocketPort.ToString()))
+						throw new Exception(message: "No QQ WebSocket port provided!");
+					if (string.IsNullOrEmpty(config.QQWebSocketToken))
+						throw new Exception(message: "No QQ WebSocket token provided!");
+					if (string.IsNullOrEmpty(config.ToQQID))
+						throw new Exception(message: "No QQ ID provided!");
+					if (string.IsNullOrEmpty(config.QQWebSocketToken))
+						_logger.LogInformation("No QQ WebSocket token provided, make sure to set it right if token is enabled in your server settings.");
+				}
 
-                // PushPlus
-                if (config.EnablePushPlus)
-                {
+				// PushPlus
+				if (config.EnablePushPlus) {
                     if (string.IsNullOrEmpty(config.PushPlusToken))
                         throw new Exception(message: ConfigValidatorStrings.noPushPlusToken);
                 }
 
                 // DingTalk
-                if (config.EnableDingTalk)
-                {
+                if (config.EnableDingTalk) {
                     if (string.IsNullOrEmpty(config.DingTalkBotToken))
                         throw new Exception(message: ConfigValidatorStrings.noDingTalkToken);
                 }
 
                 // PushDeer
-                if (config.EnablePushDeer)
-                {
+                if (config.EnablePushDeer) {
                     if (string.IsNullOrEmpty(config.PushDeerToken))
                         throw new Exception(message: ConfigValidatorStrings.noPushDeerToken);
                 }
 
                 // Discord
-                if (config.EnableDiscord)
-                {
+                if (config.EnableDiscord) {
                     if (string.IsNullOrEmpty(config.DiscordWebhookURL))
                         throw new Exception(message: ConfigValidatorStrings.noDiscordWebhook);
                 }
 
                 // Meow
-                if (config.EnableMeow)
-                {
+                if (config.EnableMeow) {
                     if (string.IsNullOrEmpty(config.MeowAddress))
                         throw new Exception(message: ConfigValidatorStrings.noMeowAddress);
                     if (string.IsNullOrEmpty(config.MeowNickname))
@@ -109,20 +99,15 @@ namespace EGSMobileFreeGamesNotifier.Services
                 }
 
                 _logger.LogDebug($"Done: {ConfigValidatorStrings.debugCheckValid}");
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {ConfigValidatorStrings.debugCheckValid}");
                 throw;
-            }
-            finally
-            {
+            } finally {
                 Dispose();
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             GC.SuppressFinalize(this);
         }
     }
