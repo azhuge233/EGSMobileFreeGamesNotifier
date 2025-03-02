@@ -13,7 +13,7 @@
 
         internal static readonly string debugSendMessagePushPlus = "Send notification to PushPlus";
 
-        internal static readonly string debugSendMessageQQ = "Send notifications to QQ Http";
+        internal static readonly string debugSendMessageQQHttp = "Send notifications to QQ Http";
 
         internal static readonly string debugSendMessageQQWebSocket = "Send notifications to QQ WebSocket";
         internal static readonly string debugWSReconnectionQQWebSocket = "Reconnection happened, type: {0}";

@@ -12,7 +12,7 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier {
 
         public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
             try {
-                _logger.LogDebug(NotifierStrings.debugSendMessageQQ);
+                _logger.LogDebug(NotifierStrings.debugSendMessageQQHttp);
 
                 string url = string.Format(NotifyFormatStrings.qqHttpUrlFormat, config.QQHttpAddress, config.QQHttpPort, config.QQHttpToken);
 
@@ -26,7 +26,7 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier {
                 var resp = new HttpResponseMessage();
 
                 foreach (var record in records) {
-                    _logger.LogDebug($"{NotifierStrings.debugSendMessageQQ} : {record.Title}");
+                    _logger.LogDebug($"{NotifierStrings.debugSendMessageQQHttp} : {record.Title}");
 
                     content.Message = $"{record.ToQQMessage()}{NotifyFormatStrings.projectLink}";
 
@@ -36,9 +36,9 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier {
                     _logger.LogDebug(await resp.Content.ReadAsStringAsync());
                 }
 
-                _logger.LogDebug($"Done: {NotifierStrings.debugSendMessageQQ}");
+                _logger.LogDebug($"Done: {NotifierStrings.debugSendMessageQQHttp}");
             } catch (Exception) {
-                _logger.LogError($"Error: {NotifierStrings.debugSendMessageQQ}");
+                _logger.LogError($"Error: {NotifierStrings.debugSendMessageQQHttp}");
                 throw;
             } finally {
                 Dispose();
