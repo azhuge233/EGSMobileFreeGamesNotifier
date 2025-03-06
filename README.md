@@ -13,7 +13,7 @@ Install dotnet 9.0 SDK first, you can find installation packages/guides [here](h
 
 ```shell
 git clone https://github.com/azhuge233/EGSMobileFreeGamesNotifier.git
-cd EGSFreeGamesNotifier
+cd EGSMobileFreeGamesNotifier
 dotnet publish -c Release -p:PublishDir=/your/path/here -r [win-x64/osx-x64/...] --sc
 ```
 
