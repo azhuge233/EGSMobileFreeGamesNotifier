@@ -1,7 +1,7 @@
 ﻿namespace EGSMobileFreeGamesNotifier.Strings {
     internal class ParserStrings {
         internal static readonly string storeBaseUrl = @"https://store.epicgames.com/p/";
-        internal static readonly string purchaseBaseUrl = @"https://store.epicgames.com/purchase?&offers=1-{0}-{1}";
+        internal static readonly string purchaseBaseUrl = @"https://store.epicgames.com/purchase?offers=1-{0}-{1}";
 
 
 		internal static readonly string freeDataValue = "freeGame";
