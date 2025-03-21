@@ -27,8 +27,8 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier {
                     for (int j = i * DiscordMaxEmbedCount; (j - i * DiscordMaxEmbedCount) < 10 && j < records.Count; j++) {
                         content.Embeds.Add(
                             new Embed() {
-                                Title = records[j].Description,
-                                Url = records[j].Url,
+                                Title = records[j].Title,
+                                Url = string.Empty, // records[j].UrlAndroid,
                                 Description = records[j].ToDiscordMessage(),
                                 Footer = new Footer() { Text = NotifyFormatStrings.projectLink }
                             }

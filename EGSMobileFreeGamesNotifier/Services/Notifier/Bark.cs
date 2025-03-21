@@ -31,7 +31,7 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
                         .Append(NotifyFormatStrings.barkUrlTitle)
                         .Append(HttpUtility.UrlEncode(record.ToBarkMessage()))
                         .Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
-                        .AppendFormat(NotifyFormatStrings.barkUrlArgs, HttpUtility.UrlEncode(record.Url))
+                        .AppendFormat(NotifyFormatStrings.barkUrlArgs, HttpUtility.UrlEncode(record.UrlAndroid))
                         .ToString()
                     );
 

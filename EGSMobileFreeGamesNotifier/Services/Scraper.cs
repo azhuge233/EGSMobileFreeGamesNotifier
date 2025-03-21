@@ -2,20 +2,33 @@
 using Microsoft.Extensions.Logging;
 
 namespace EGSMobileFreeGamesNotifier.Services {
-    internal class Scraper(ILogger<Scraper> logger): IDisposable {
-        private readonly ILogger<Scraper> _logger = logger;
+    internal class Scraper: IDisposable {
+        private readonly ILogger<Scraper> _logger;
 
         internal HttpClient Client { get; set; } = new();
 
-        internal async Task<string> GetSource() {
+        public Scraper(ILogger<Scraper> logger) {
+            _logger = logger;
+            Client.DefaultRequestHeaders.UserAgent.ParseAdd(ScraperStrings.UserAgent);
+            Client.DefaultRequestHeaders.Add(ScraperStrings.CacheControlKey, ScraperStrings.CacheControlValue);
+			Client.DefaultRequestHeaders.Add(ScraperStrings.PragmaKey, ScraperStrings.PragmaValue);
+		}
+
+        internal async Task<Tuple<string, string>> GetSource() {
             try {
                 _logger.LogDebug(ScraperStrings.debugGetSource);
 
-                var resp = await Client.GetAsync(ScraperStrings.Url);
-                var content = await resp.Content.ReadAsStringAsync();
+                // send one dummy request first to get cloudflare validation passed
+                var resp = await Client.GetAsync(ScraperStrings.UrlAndroid);
 
-                _logger.LogDebug($"Done: {ScraperStrings.debugGetSource}");
-                return content;
+				resp = await Client.GetAsync(ScraperStrings.UrlAndroid);
+				var androidContent = await resp.Content.ReadAsStringAsync();
+
+				resp = await Client.GetAsync(ScraperStrings.UrlIOS);
+                var iosContent = await resp.Content.ReadAsStringAsync();
+
+				_logger.LogDebug($"Done: {ScraperStrings.debugGetSource}");
+                return new (androidContent, iosContent);
             } catch (Exception) {
                 _logger.LogError($"Error: {ScraperStrings.debugGetSource}");
                 throw;

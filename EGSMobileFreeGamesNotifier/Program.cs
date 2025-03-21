@@ -28,10 +28,10 @@ namespace EGSMobileFreeGamesNotifier
                     servicesProvider.GetRequiredService<ConfigValidator>().CheckValid(config);
 
                     // Get page source
-                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSource();
+                    var sources = await servicesProvider.GetRequiredService<Scraper>().GetSource();
 
                     // Parse page source
-                    var parseResult = servicesProvider.GetRequiredService<Parser>().Parse(source, oldRecord);
+                    var parseResult = servicesProvider.GetRequiredService<Parser>().Parse(sources, oldRecord);
 
                     // Notify first, then write records
                     await notifyOP.DoNotify(config, parseResult.NotifyRecords);
