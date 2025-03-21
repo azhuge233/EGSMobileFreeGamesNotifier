@@ -23,7 +23,7 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier {
                 var client = new HttpClient();
 
                 foreach (var record in records) {
-                    content.Message = record.ToMeowMessage();
+                    content.Message = $"{record.ToMeowMessage()}{NotifyFormatStrings.projectLink}";
                     // content.Url = record.Url;
 
                     var data = new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
