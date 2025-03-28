@@ -1,6 +1,6 @@
 ﻿namespace EGSMobileFreeGamesNotifier.Strings {
     internal class ScraperStrings {
-		private static readonly string UrlBase = @"https://egs-platform-service.store.epicgames.com/api/v2/public/discover/home?count=1&start=2&country=US&locale=en-US&store=EGS&platform=";
+		private static readonly string UrlBase = @"https://egs-platform-service.store.epicgames.com/api/v2/public/discover/home?count=10&start=0&country=US&locale=en-US&store=EGS&platform=";
 
 		internal static readonly string UrlAndroid = $"{UrlBase}android";
         internal static readonly string UrlIOS = $"{UrlBase}ios";
