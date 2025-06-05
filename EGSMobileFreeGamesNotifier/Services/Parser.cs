@@ -41,7 +41,7 @@ namespace EGSMobileFreeGamesNotifier.Services {
 
         private void ParseSource(string source, string platform, ref Dictionary<string, FreeGameRecord> dict) {
             try {
-                _logger.LogDebug(ParserStrings.debugParseSource);
+                _logger.LogDebug($"{ParserStrings.debugParseSource} | {platform}");
 
 				var jsonData = JsonSerializer.Deserialize<DataWrapper>(source);
 
@@ -57,6 +57,8 @@ namespace EGSMobileFreeGamesNotifier.Services {
 								var offerID = offer.OfferId;
 								var title = offer.Content.Title;
 								var slug = offer.Content.Mapping.Slug;
+
+                                _logger.LogDebug($"{title} | {slug} | {sandboxID} | {offerID}");
 
                                 if (!dict.TryGetValue(sandboxID, out FreeGameRecord value)) {
                                     _logger.LogInformation(ParserStrings.debugFoundInfo, title);
@@ -92,9 +94,9 @@ namespace EGSMobileFreeGamesNotifier.Services {
 					} else _logger.LogDebug(ParserStrings.debugNoFreeSection);
 				} else _logger.LogDebug(ParserStrings.debugNoJsonData);
 
-				_logger.LogDebug($"Done: {ParserStrings.debugParseSource}");
+				_logger.LogDebug($"Done: {ParserStrings.debugParseSource} | {platform}");
             } catch (Exception) {
-                _logger.LogError($"Error: {ParserStrings.debugParseSource}");
+                _logger.LogError($"Error: {ParserStrings.debugParseSource} | {platform}");
                 throw;
             }
         }
