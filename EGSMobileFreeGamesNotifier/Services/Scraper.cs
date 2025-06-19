@@ -36,8 +36,8 @@ namespace EGSMobileFreeGamesNotifier.Services {
                 var androidContent = await TryGetData(ScraperStrings.UrlAndroid, "android");
 				var iosContent = await TryGetData(ScraperStrings.UrlIOS, "ios");
 
-				File.WriteAllText("Test\\android.json", androidContent);
-				File.WriteAllText("Test\\ios.json", iosContent);
+				// File.WriteAllText("Test\\android.json", androidContent);
+				// File.WriteAllText("Test\\ios.json", iosContent);
 
 				_logger.LogDebug($"Done: {ScraperStrings.debugGetSource}");
                 return new (androidContent, iosContent);
