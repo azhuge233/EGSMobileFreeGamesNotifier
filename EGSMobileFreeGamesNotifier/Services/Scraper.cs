@@ -52,7 +52,7 @@ namespace EGSMobileFreeGamesNotifier.Services {
 		private async Task<string> TryGetData(string url, string platform) {
             try {
                 int tryCount = 0;
-                while (++tryCount < MaxTries) {
+                while (++tryCount <= MaxTries) {
                     _logger.LogDebug(ScraperStrings.debugTryMessage, tryCount, platform);
 
                     var uri = new Uri(url);
