@@ -66,7 +66,7 @@ namespace EGSMobileFreeGamesNotifier.Services {
 
                     await Task.Delay(new Random().Next(2, 5) * 500);
 				}
-                throw new Exception(string.Format(ScraperStrings.errorGetDataFailed, platform, tryCount));
+                throw new Exception(string.Format(ScraperStrings.errorGetDataFailed, platform, MaxTries));
             } catch (Exception) {
                 throw;
             }
