@@ -6,7 +6,7 @@ namespace EGSMobileFreeGamesNotifier.Services {
     internal class Scraper: IDisposable {
         private readonly ILogger<Scraper> _logger;
 
-        private readonly int MaxTries = 3;
+        private readonly int MaxTries = 5;
 
 		private readonly HttpClient Client;
 		private readonly CookieContainer _cookieContainer = new();
