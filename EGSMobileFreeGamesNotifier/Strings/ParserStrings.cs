@@ -21,6 +21,7 @@
 
         internal static readonly string debugFoundInPreviousRecord = "Found in previous records: {0}";
         internal static readonly string debugFoundNewRecord = "Found new record: {0}";
-        #endregion
-    }
+        internal static readonly string debugNewRecordHasUpdatedInfo = "{0} is found in previous record, but new record has updated information";
+		#endregion
+	}
 }

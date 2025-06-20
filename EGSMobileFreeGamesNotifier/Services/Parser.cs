@@ -26,7 +26,16 @@ namespace EGSMobileFreeGamesNotifier.Services {
                     if (!records.Any(record => record.SandboxID == newRecord.SandboxID)) {
                         _logger.LogDebug(ParserStrings.debugFoundNewRecord, newRecord.Title);
                         parseResult.NotifyRecords.Add(new NotifyRecord(newRecord));
-                    } else _logger.LogDebug(ParserStrings.debugFoundInPreviousRecord, newRecord.Title);
+                    } else {
+                        var oldRecord = records.First(rec => rec.SandboxID == newRecord.SandboxID);
+                        if (oldRecord.OfferIDAndroid != newRecord.OfferIDAndroid ||
+                            oldRecord.OfferIDIOS != newRecord.OfferIDIOS ||
+                            oldRecord.PurchaseUrlAndroid != newRecord.PurchaseUrlAndroid ||
+                            oldRecord.PurchaseUrlIOS != newRecord.PurchaseUrlIOS) { 
+                            _logger.LogDebug(ParserStrings.debugNewRecordHasUpdatedInfo, newRecord.Title);
+							parseResult.NotifyRecords.Add(new NotifyRecord(newRecord, 1));
+						} else _logger.LogDebug(ParserStrings.debugFoundInPreviousRecord, newRecord.Title);
+					}
                 }
 
 				_logger.LogDebug($"Done: {ParserStrings.debugParse}");
