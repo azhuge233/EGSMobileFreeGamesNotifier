@@ -24,6 +24,7 @@
 		internal static readonly string debugGetSource = "Get source";
         internal static readonly string debugGetSourceWithUrl = "Getting source: {0}";
 		internal static readonly string debugTryMessage = "Trying to get json data: {0} | {1}";
+		internal static readonly string debugTryMessagePlaywright = "Trying to get json data with playwright";
 
 		internal static readonly string errorGetDataFailed = "Failed to get data from {0} after {1} tries";
 		#endregion
