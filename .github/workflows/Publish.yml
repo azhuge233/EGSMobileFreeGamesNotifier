@@ -27,7 +27,7 @@ jobs:
     - name: Publish
       run: |
         dotnet restore
-        dotnet publish -c release -r win-x64 -p:PublishDir="$GITHUB_WORKSPACE/bin/release/win-x64" -p:PublishSingleFile=true --sc
+        dotnet publish -c release -r win-x64 -p:PublishDir="$GITHUB_WORKSPACE/bin/release/win-x64" --sc
         rm -f $GITHUB_WORKSPACE/bin/release/win-x64/aspnetcorev2_inprocess.dll
       
     - name: Install Zip
