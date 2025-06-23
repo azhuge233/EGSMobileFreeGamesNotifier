@@ -10,6 +10,11 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      Deps:
+      Playwright:
+        patterns:
+          - "Microsoft.Playwright"
+      Others:
         patterns:
           - "*"
+        exclude-patterns:
+          - "Microsoft.Playwright"
