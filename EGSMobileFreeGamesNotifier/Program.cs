@@ -3,29 +3,23 @@ using EGSMobileFreeGamesNotifier.Services;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
-namespace EGSMobileFreeGamesNotifier
-{
-    internal class Program
-    {
+namespace EGSMobileFreeGamesNotifier {
+    internal class Program {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        static async Task Main()
-        {
-            try
-            {
+        static async Task Main() {
+            try {
                 var servicesProvider = DI.BuildDiAll();
 
                 logger.Info(" - Start Job -");
 
-                using (servicesProvider as IDisposable)
-                {
+                using (servicesProvider as IDisposable) {
                     var jsonOp = servicesProvider.GetRequiredService<Json>();
                     var notifyOP = servicesProvider.GetRequiredService<Notify>();
 
-                    var config = jsonOp.LoadConfig();
                     var oldRecord = jsonOp.LoadData();
 
-                    servicesProvider.GetRequiredService<ConfigValidator>().CheckValid(config);
+                    servicesProvider.GetRequiredService<ConfigValidator>().CheckValid();
 
                     // Get page source
                     var sources = await servicesProvider.GetRequiredService<Scraper>().GetSource();
@@ -34,20 +28,16 @@ namespace EGSMobileFreeGamesNotifier
                     var parseResult = servicesProvider.GetRequiredService<Parser>().Parse(sources, oldRecord);
 
                     // Notify first, then write records
-                    await notifyOP.DoNotify(config, parseResult.NotifyRecords);
+                    await notifyOP.DoNotify(parseResult.NotifyRecords);
 
                     // Write new records
                     jsonOp.WriteData(parseResult.Records);
                 }
 
                 logger.Info(" - Job End -\n");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 logger.Error($"{ex.Message}\n");
-            }
-            finally
-            {
+            } finally {
                 LogManager.Shutdown();
             }
         }

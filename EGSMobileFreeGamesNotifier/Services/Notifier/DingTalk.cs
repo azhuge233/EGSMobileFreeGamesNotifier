@@ -1,21 +1,19 @@
-﻿using System.Text;
-using System.Text.Json;
-using EGSMobileFreeGamesNotifier.Models.Config;
+﻿using EGSMobileFreeGamesNotifier.Models.Config;
 using EGSMobileFreeGamesNotifier.Models.PostContent;
 using EGSMobileFreeGamesNotifier.Models.Record;
 using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Text;
+using System.Text.Json;
 
-namespace EGSMobileFreeGamesNotifier.Services.Notifier
-{
-    internal class DingTalk(ILogger<DingTalk> logger) : INotifiable
-    {
+namespace EGSMobileFreeGamesNotifier.Services.Notifier {
+    internal class DingTalk(ILogger<DingTalk> logger, IOptions<Config> config) : INotifiable {
         private readonly ILogger<DingTalk> _logger = logger;
+        private readonly Config config = config.Value;
 
-        public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records)
-        {
-            try
-            {
+        public async Task SendMessage(List<NotifyRecord> records) {
+            try {
                 _logger.LogDebug(NotifierStrings.debugSendMessageDingTalk);
 
                 var url = new StringBuilder().AppendFormat(NotifyFormatStrings.dingTalkUrlFormat, config.DingTalkBotToken).ToString();
@@ -24,8 +22,7 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
 
                 var client = new HttpClient();
 
-                foreach (var record in records)
-                {
+                foreach (var record in records) {
                     content.Text.Content_ = $"{record.ToDingTalkMessage()}{NotifyFormatStrings.projectLink}";
 
                     var data = new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
@@ -35,20 +32,15 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
                 }
 
                 _logger.LogDebug($"Done: {NotifierStrings.debugSendMessageDingTalk}");
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {NotifierStrings.debugSendMessageDingTalk}");
                 throw;
-            }
-            finally
-            {
+            } finally {
                 Dispose();
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             GC.SuppressFinalize(this);
         }
     }

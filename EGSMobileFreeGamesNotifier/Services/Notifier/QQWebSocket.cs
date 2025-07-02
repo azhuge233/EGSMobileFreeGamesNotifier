@@ -1,17 +1,19 @@
-﻿using System.Net.WebSockets;
-using System.Text.Json;
-using EGSMobileFreeGamesNotifier.Models.Config;
+﻿using EGSMobileFreeGamesNotifier.Models.Config;
 using EGSMobileFreeGamesNotifier.Models.Record;
 using EGSMobileFreeGamesNotifier.Models.WebSocketContent;
 using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Net.WebSockets;
+using System.Text.Json;
 using Websocket.Client;
 
 namespace EGSMobileFreeGamesNotifier.Services.Notifier {
-    internal class QQWebSocket(ILogger<QQWebSocket> logger) : INotifiable {
+    internal class QQWebSocket(ILogger<QQWebSocket> logger, IOptions<Config> config) : INotifiable {
         private readonly ILogger<QQWebSocket> _logger = logger;
+        private readonly Config config = config.Value;
 
-        public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
+		public async Task SendMessage(List<NotifyRecord> records) {
             try {
                 _logger.LogDebug(NotifierStrings.debugSendMessageQQWebSocket);
 

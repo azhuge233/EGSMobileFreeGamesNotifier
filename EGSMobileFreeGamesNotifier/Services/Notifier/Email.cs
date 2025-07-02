@@ -1,21 +1,19 @@
-﻿using System.Text;
-using EGSMobileFreeGamesNotifier.Models.Config;
+﻿using EGSMobileFreeGamesNotifier.Models.Config;
 using EGSMobileFreeGamesNotifier.Models.Record;
 using EGSMobileFreeGamesNotifier.Strings;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MimeKit;
+using System.Text;
 
-namespace EGSMobileFreeGamesNotifier.Services.Notifier
-{
-    internal class Email(ILogger<Email> logger) : INotifiable
-    {
+namespace EGSMobileFreeGamesNotifier.Services.Notifier {
+    internal class Email(ILogger<Email> logger, IOptions<Config> config) : INotifiable {
         private readonly ILogger<Email> _logger = logger;
+        private readonly Config config = config.Value;
 
-        public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records)
-        {
-            try
-            {
+        public async Task SendMessage(List<NotifyRecord> records) {
+            try {
                 _logger.LogDebug(NotifierStrings.debugSendMessageEmail);
 
                 var message = CreateMessage(records, config.FromEmailAddress, config.ToEmailAddress);
@@ -30,22 +28,16 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
                 client.Disconnect(true);
 
                 _logger.LogDebug($"Done: {NotifierStrings.debugSendMessageEmail}");
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {NotifierStrings.debugSendMessageEmail}");
                 throw;
-            }
-            finally
-            {
+            } finally {
                 Dispose();
             }
         }
 
-        private MimeMessage CreateMessage(List<NotifyRecord> pushList, string fromAddress, string toAddress)
-        {
-            try
-            {
+        private MimeMessage CreateMessage(List<NotifyRecord> pushList, string fromAddress, string toAddress) {
+            try {
                 _logger.LogDebug(NotifierStrings.debugCreateMessage);
 
                 var message = new MimeMessage();
@@ -60,23 +52,19 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
 
                 pushList.ForEach(record => sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, record.ToEmailMessage()));
 
-                message.Body = new TextPart("html")
-                {
+                message.Body = new TextPart("html") {
                     Text = sb.Append(NotifyFormatStrings.projectLinkHTML).ToString()
                 };
 
                 _logger.LogDebug($"Done: {NotifierStrings.debugCreateMessage}");
                 return message;
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {NotifierStrings.debugCreateMessage}");
                 throw;
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             GC.SuppressFinalize(this);
         }
     }

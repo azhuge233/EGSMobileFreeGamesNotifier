@@ -5,6 +5,6 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
 {
     internal interface INotifiable : IDisposable
     {
-        public Task SendMessage(NotifyConfig config, List<NotifyRecord> records);
+        public Task SendMessage(List<NotifyRecord> records);
     }
 }

@@ -1,16 +1,18 @@
-﻿using System.Text;
-using System.Text.Json;
-using EGSMobileFreeGamesNotifier.Models.Config;
+﻿using EGSMobileFreeGamesNotifier.Models.Config;
 using EGSMobileFreeGamesNotifier.Models.PostContent;
 using EGSMobileFreeGamesNotifier.Models.Record;
 using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Text;
+using System.Text.Json;
 
 namespace EGSMobileFreeGamesNotifier.Services.Notifier {
-    internal class Meow(ILogger<Meow> logger) : INotifiable {
+    internal class Meow(ILogger<Meow> logger, IOptions<Config> config) : INotifiable {
         private readonly ILogger<Meow> _logger = logger;
+        private readonly Config config = config.Value;
 
-        public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
+		public async Task SendMessage(List<NotifyRecord> records) {
             try {
                 _logger.LogDebug(NotifierStrings.debugSendMessageMeow);
 

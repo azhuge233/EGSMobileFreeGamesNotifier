@@ -1,29 +1,26 @@
-﻿using System.Text;
-using System.Text.Json;
-using EGSMobileFreeGamesNotifier.Models.Config;
+﻿using EGSMobileFreeGamesNotifier.Models.Config;
 using EGSMobileFreeGamesNotifier.Models.PostContent;
 using EGSMobileFreeGamesNotifier.Models.Record;
 using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Text;
+using System.Text.Json;
 
-namespace EGSMobileFreeGamesNotifier.Services.Notifier
-{
-    internal class PushPlus(ILogger<PushPlus> logger) : INotifiable
-    {
+namespace EGSMobileFreeGamesNotifier.Services.Notifier {
+    internal class PushPlus(ILogger<PushPlus> logger, IOptions<Config> config) : INotifiable {
         private readonly ILogger<PushPlus> _logger = logger;
+        private readonly Config config = config.Value;
 
-        public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records)
-        {
-            try
-            {
+        public async Task SendMessage(List<NotifyRecord> records) {
+            try {
                 _logger.LogDebug(NotifierStrings.debugSendMessagePushPlus);
 
                 var client = new HttpClient();
 
                 var title = string.Format(NotifyFormatStrings.pushPlusTitleFormat, records.Count);
 
-                var postContent = new PushPlusPostContent()
-                {
+                var postContent = new PushPlusPostContent() {
                     Token = config.PushPlusToken,
                     Title = title,
                     Content = CreateMessage(records)
@@ -35,22 +32,16 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
                 _logger.LogDebug(await resp.Content.ReadAsStringAsync());
 
                 _logger.LogDebug($"Done: {NotifierStrings.debugSendMessagePushPlus}");
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {NotifierStrings.debugSendMessagePushPlus}");
                 throw;
-            }
-            finally
-            {
+            } finally {
                 Dispose();
             }
         }
 
-        private string CreateMessage(List<NotifyRecord> records)
-        {
-            try
-            {
+        private string CreateMessage(List<NotifyRecord> records) {
+            try {
                 _logger.LogDebug(NotifierStrings.debugCreateMessage);
 
                 var sb = new StringBuilder();
@@ -61,16 +52,13 @@ namespace EGSMobileFreeGamesNotifier.Services.Notifier
 
                 _logger.LogDebug($"Done: {NotifierStrings.debugCreateMessage}");
                 return sb.ToString();
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 _logger.LogError($"Error: {NotifierStrings.debugCreateMessage}");
                 throw;
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             GC.SuppressFinalize(this);
         }
     }
