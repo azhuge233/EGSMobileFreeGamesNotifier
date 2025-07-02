@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using EGSMobileFreeGamesNotifier.Models.Config;
 using EGSMobileFreeGamesNotifier.Models.Record;
 using EGSMobileFreeGamesNotifier.Strings;
 using Microsoft.Extensions.Logging;
