@@ -55,51 +55,53 @@ namespace EGSMobileFreeGamesNotifier.Services {
 				var jsonData = JsonSerializer.Deserialize<DataWrapper>(source);
 
                 if (jsonData != null) {
-                    var freeSection = jsonData.Data.Where(dataItem => dataItem.Type == ParserStrings.freeDataValue).First();
+                    var freeSections = jsonData.Data.Where(dataItem => dataItem.Type == ParserStrings.freeDataValue).ToList();
 
-                    if (freeSection != null) { 
-                        var offers = freeSection.Offers;
+                    if (freeSections != null && freeSections.Count > 0) {
+                        foreach (var freeSection in freeSections) {
+                            var offers = freeSection.Offers;
 
-                        if (offers.Count > 0) {
-                            foreach (var offer in offers) { 
-                                var sandboxID = offer.SandboxId;
-								var offerID = offer.OfferId;
-								var title = offer.Content.Title;
-								var slug = offer.Content.Mapping.Slug;
+                            if (offers.Count > 0) {
+                                foreach (var offer in offers) {
+                                    var sandboxID = offer.SandboxId;
+                                    var offerID = offer.OfferId;
+                                    var title = offer.Content.Title;
+                                    var slug = offer.Content.Mapping.Slug;
 
-                                _logger.LogDebug($"{title} | {slug} | {sandboxID} | {offerID}");
+                                    _logger.LogDebug($"{title} | {slug} | {sandboxID} | {offerID}");
 
-                                if (!dict.TryGetValue(sandboxID, out FreeGameRecord value)) {
-                                    _logger.LogInformation(ParserStrings.debugFoundInfo, title);
+                                    if (!dict.TryGetValue(sandboxID, out FreeGameRecord value)) {
+                                        _logger.LogInformation(ParserStrings.debugFoundInfo, title);
 
-                                    var newRecord = new FreeGameRecord {
-                                        SandboxID = sandboxID,
-                                        Title = title
-                                    };
+                                        var newRecord = new FreeGameRecord {
+                                            SandboxID = sandboxID,
+                                            Title = title
+                                        };
 
-                                    if (platform == "android") {
-                                        newRecord.OfferIDAndroid = offerID;
-                                        newRecord.UrlAndroid = $"{ParserStrings.storeBaseUrl}{slug}";
-                                        newRecord.PurchaseUrlAndroid = string.Format(ParserStrings.purchaseBaseUrl, sandboxID, offerID);
-                                    } else { // just in case that iOS platform has exclusive games
-                                        newRecord.OfferIDIOS = offerID;
-                                        newRecord.UrlIOS = $"{ParserStrings.storeBaseUrl}{slug}";
-                                        newRecord.PurchaseUrlIOS = string.Format(ParserStrings.purchaseBaseUrl, sandboxID, offerID);
+                                        if (platform == "android") {
+                                            newRecord.OfferIDAndroid = offerID;
+                                            newRecord.UrlAndroid = $"{ParserStrings.storeBaseUrl}{slug}";
+                                            newRecord.PurchaseUrlAndroid = string.Format(ParserStrings.purchaseBaseUrl, sandboxID, offerID);
+                                        } else { // just in case that iOS platform has exclusive games
+                                            newRecord.OfferIDIOS = offerID;
+                                            newRecord.UrlIOS = $"{ParserStrings.storeBaseUrl}{slug}";
+                                            newRecord.PurchaseUrlIOS = string.Format(ParserStrings.purchaseBaseUrl, sandboxID, offerID);
+                                        }
+
+                                        dict.Add(sandboxID, newRecord);
+                                    } else {
+                                        // if game present in the dictionary, means Android platform has the same game
+                                        // bacause Android source was parsed first
+                                        // updating the ios links
+                                        _logger.LogInformation(ParserStrings.debugInfoInAndroid, title);
+
+                                        value.OfferIDIOS = offerID;
+                                        value.UrlIOS = $"{ParserStrings.storeBaseUrl}{slug}";
+                                        value.PurchaseUrlIOS = string.Format(ParserStrings.purchaseBaseUrl, sandboxID, offerID);
                                     }
-
-                                    dict.Add(sandboxID, newRecord);
-                                } else {
-									// if game present in the dictionary, means Android platform has the same game
-                                    // bacause Android source was parsed first
-                                    // updating the ios links
-									_logger.LogInformation(ParserStrings.debugInfoInAndroid, title);
-
-									value.OfferIDIOS = offerID;
-									value.UrlIOS = $"{ParserStrings.storeBaseUrl}{slug}";
-									value.PurchaseUrlIOS = string.Format(ParserStrings.purchaseBaseUrl, sandboxID, offerID);
                                 }
-							}
-                        } else _logger.LogDebug(ParserStrings.debugNoFreeOffers);
+                            } else _logger.LogDebug(ParserStrings.debugNoFreeOffers);
+                        }
 					} else _logger.LogDebug(ParserStrings.debugNoFreeSection);
 				} else _logger.LogDebug(ParserStrings.debugNoJsonData);
 
