@@ -7,7 +7,7 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<PublishTrimmed>false</PublishTrimmed>
 		<SelfContained>true</SelfContained>
-		<EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
